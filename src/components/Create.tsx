@@ -3,35 +3,51 @@ import React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import useConfig from "./useConfig";
+
 const Create = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("normal");
   const [isPending, setIsPending] = useState(false);
+
   const history = useHistory();
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const note = { title, desc, priority };
-    setIsPending(true);
-    const url = String(process.env.NOTES_API_URL);
+  const { app } = useConfig();
+  const url = app.NOTES_API_URL;
 
-    if (!url) {
-      throw Error("API_URL is not set");
-    }
+  if (!url) {
+    throw Error("API_URL is not set");
+  }
 
-    // * Send data
-    fetch(`${url}/notes`, {
+  // * Send data
+  let addNote = async () => {
+    let res = await fetch(`${url}/notes`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(note),
-    }).then(() => {
+      body: JSON.stringify({ title, desc, priority }),
+    });
+    let resJson = await res.json();
+    if (res.status === 200) {
       console.log("New note added");
       setIsPending(false);
       history.push("/");
-    });
+    } else {
+      console.error(`Failed to add note. An error occured: ${res.status} - ${res.statusText}`);
+    }
+  };
+
+  // * Form handler
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      setIsPending(true);
+      await addNote();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
