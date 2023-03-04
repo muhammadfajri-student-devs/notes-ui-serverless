@@ -2,11 +2,11 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-const NoteList = ({ notes, title }: INoteList) => {
+const NoteList = ({ notes, title }: any) => {
   return (
     <div className="blog-list">
       <h2>{title}</h2>
-      {notes.map((note) => (
+      {notes.map((note: NotesData) => (
         <div className="blog-preview" key={note.id}>
           <Link to={`/notes/${note.id}`}>
             <h2>{note.title}</h2>
@@ -20,13 +20,8 @@ const NoteList = ({ notes, title }: INoteList) => {
   );
 };
 
-interface INoteList {
-  notes: NotesData[];
-  title: string;
-}
-
 interface NotesData {
-  id: number;
+  id: string;
   title: string;
   desc: string;
   priority: string;
