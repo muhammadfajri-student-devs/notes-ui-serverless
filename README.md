@@ -1,7 +1,4 @@
-# ♨️ serverless-react-boilerplate
-
-[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
-[![dependencies](https://img.shields.io/david/arabold/serverless-react-boilerplate.svg)](https://github.com/arabold/serverless-react-boilerplate)
+# 📝 Front-End for Notes
 
 Lightweight boilerplate project to set up a React 17 web application on AWS Lambda using the Serverless Framework.
 
