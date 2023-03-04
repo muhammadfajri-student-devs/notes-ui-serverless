@@ -2,10 +2,12 @@ import React from "react";
 
 import { useHistory, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useConfig from "./useConfig";
 
 const NoteDetails = () => {
   const { id } = useParams<any>();
-  const url = String(process.env.NOTES_API_URL);
+  const { app } = useConfig();
+  const url = app.NOTES_API_URL;
 
   if (!url) {
     throw Error("API_URL is not set");
@@ -31,10 +33,10 @@ const NoteDetails = () => {
       {notes && (
         <article>
           <h2>{notes.title}</h2>
+          <div>{notes.desc}</div>
           <p>
             Priority Type: <b>{notes.priority}</b>
           </p>
-          <div>{notes.desc}</div>
           <button onClick={handleClick}>Delete</button>
         </article>
       )}
