@@ -1,6 +1,6 @@
 # 📝 Front-End for Notes
 
-Lightweight boilerplate project to set up a React 17 web application on AWS Lambda using the Serverless Framework.
+Notes web-app using React 17 hosted on AWS Lambda using the Serverless Framework.
 
 ## Key Features
 

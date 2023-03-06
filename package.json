@@ -8,8 +8,8 @@
     "start:offline": "sls offline start",
     "build:serverless": "sls package",
     "build:browser": "webpack --config webpack.browser.config.js --mode production",
-    "deploy": "sls create_domain && sls deploy",
-    "destroy": "sls delete_domain && sls remove",
+    "deploy": "sls deploy",
+    "destroy": "sls remove",
     "test": "jest"
   },
   "dependencies": {
