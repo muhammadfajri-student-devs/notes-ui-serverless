@@ -46,8 +46,6 @@ functions:
           method: any
 
 custom:
-  customDomain:
-
   distBucketUrl:
     us-east-1:
       # us-east-1 uses a different URL format than the other regions
