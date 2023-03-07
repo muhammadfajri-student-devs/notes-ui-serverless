@@ -20,33 +20,30 @@ const Create = () => {
     throw Error("API_URL is not set");
   }
 
-  // * Send data
-  let addNote = async () => {
-    let res = await fetch(`${url}/notes`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, desc, priority }),
-    });
-    let resJson = await res.json();
-    if (res.status === 200) {
-      console.log("New note added");
-      setIsPending(false);
-      history.push("/");
-    } else {
-      console.error(`Failed to add note. An error occured: ${res.status} - ${res.statusText}`);
-    }
-  };
-
-  // * Form handler
-  const handleSubmit = async (e: any) => {
+  // * Form handler to send data
+  const handleSubmit = (e: any) => {
     e.preventDefault();
+
+    const note = { title, desc, priority };
+    setIsPending(true);
+
+    console.log(note);
+
+    // * Send data
     try {
-      setIsPending(true);
-      await addNote();
+      fetch(`${url}/notes`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(note),
+      }).then(() => {
+        console.log("New note added");
+        setIsPending(false);
+        history.push("/");
+      });
     } catch (err) {
-      console.log(err);
+      console.log(`Error: ${err}`);
     }
   };
 
