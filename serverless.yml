@@ -8,7 +8,7 @@ disabledDeprecations:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   region: ${env:AWS_REGION, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
   memorySize: 512
@@ -16,8 +16,8 @@ provider:
   logRetentionInDays: 7
   lambdaHashingVersion: 20201221 # for upcoming Serverless v3
 
-  apiGateway:
-    shouldStartNameWithService: true # for upcoming Serverless v3
+  httpApi:
+    cors: true
 
   environment:
     SERVERLESS_PROJECT: ${self:service}
@@ -26,48 +26,27 @@ provider:
     NOTES_API_URL: ${env:NOTES_API_URL}
     APP_DIST_URL: ${self:custom.distBucketUrl.${self:provider.region}, self:custom.distBucketUrl.default}
     APP_PUBLIC_URL: ${self:custom.distBucketUrl.${self:provider.region}, self:custom.distBucketUrl.default}
-    APIGATEWAY_URL:
-      Fn::Join:
-        - ""
-        - - https://
-          - Ref: ApiGatewayRestApi
-          - .execute-api.
-          - Ref: AWS::Region
-          - .amazonaws.com/
-          - ${self:provider.stage}
 
 plugins:
   - serverless-webpack
   - serverless-plugin-scripts
   - serverless-offline
   - serverless-s3-deploy
-  - serverless-domain-manager
 
 functions:
   serve:
     # Any web request regardless of path or method will be handled by a single Lambda function
     handler: handler.serve
     events:
-      - http:
+      - httpApi:
           path: /
           method: any
-          cors: true
-      - http:
-          path: /{any+}
+      - httpApi:
+          path: /{proxy+}
           method: any
-          cors: true
 
 custom:
   customDomain:
-    domainName: foo.com
-    stage: ${self:provider.stage}
-    basepath: ""
-    createRoute53Record: true
-    createRoute53IPv6Record: true
-    endpointType: "edge"
-    securityPolicy: tls_1_2
-    apiType: rest
-    autoDomain: true
 
   distBucketUrl:
     us-east-1:
@@ -120,13 +99,6 @@ custom:
 
 resources:
   Resources:
-    # Customize the API Gateway resource
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        # Enable gzip compression
-        MinimumCompressionSize: 1000
-
     # S3 Bucket for the distribution bundles
     DistBucket:
       Type: AWS::S3::Bucket
@@ -144,20 +116,9 @@ resources:
                 - "PUT"
               AllowedOrigins:
                 - "*"
-                - Fn::Join:
-                    - ""
-                    - - https://
-                      - Ref: ApiGatewayRestApi
-                      - .execute-api.
-                      - Ref: AWS::Region
-                      - .amazonaws.com
               MaxAge: 3000
 
   Outputs:
-    ApiGatewayRestApi:
-      Description: API Gateway Endpoint
-      Value:
-        Ref: ApiGatewayRestApi
     DistBucket:
       Description: Distribution S3 Bucket
       Value:
