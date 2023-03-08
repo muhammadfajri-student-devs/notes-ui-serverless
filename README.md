@@ -153,6 +153,41 @@ npx sls remove
 
 This will delete all resources but the distribution S3 bucket. As it still contains the bundles you will have to delete the bucket manually for now.
 
+## Hosted on EC2 (for static DNS Mikrotik)
+
+### Install & Setup nginx
+
+- Install:
+
+  ```bash
+  sudo apt install nginx -y
+  ```
+
+- Config at `/etc/nginx/sites-available/default`:
+
+  ```conf
+          server_name <ip-public>;
+          # example: server_name 13.212.75.218;
+
+          location / {
+                  proxy_pass <api-gateway-endpoint>;
+                  # example: proxy_pass https://mreim132vph.execute-api.ap-southeast-1.amazonaws.com;
+                  proxy_set_header Host $proxy_host;
+          }
+  ```
+
+- Verify your config, if it return `ok` then you can continue the step:
+
+  ```bash
+  sudo nginx -t
+  ```
+
+- Start nginx
+  ```bash
+  sudo systemctl start nginx
+  sudo systemctl enable nginx
+  ```
+
 ## Changelog
 
 ### 2021-10-10
