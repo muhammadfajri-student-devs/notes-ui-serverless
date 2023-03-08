@@ -61,7 +61,7 @@ const Create = () => {
           <option value="mandatory">Mandatory</option>
           <option value="urgent">Urgent</option>
         </select>
-        {!isPending && <button>Add Note</button>}
+        {!isPending && <button style={{ background: "mediumspringgreen", color: "black" }}>Add Note</button>}
         {isPending && <button disabled>Adding Note...</button>}
       </form>
     </div>
