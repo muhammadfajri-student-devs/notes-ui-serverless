@@ -8,13 +8,15 @@ disabledDeprecations:
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   region: ${env:AWS_REGION, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
   memorySize: 512
   timeout: 6
   logRetentionInDays: 7
   lambdaHashingVersion: 20201221 # for upcoming Serverless v3
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
 
   httpApi:
     cors: true
